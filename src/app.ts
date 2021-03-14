@@ -1,6 +1,10 @@
-import express from 'express'
+import { join } from 'path';
+import cors from 'cors';
+import express from 'express';
 import { ConsoleColor } from './core/console';
 import Logger from './core/logger';
+import routes from './routes';
+import RequestLoggerMiddleware from './core/http/request-logger.middleware';
 
 export default class App {
 
@@ -13,5 +17,25 @@ export default class App {
 
     constructor() {
         this.express = express();
+        this.setupExpress();
+        this.setupLogger();
+        this.routes();
+    }
+
+    private setupExpress(): void {
+        this.express.use(cors());
+        this.express.use(express.json());
+        this.express.use(express.urlencoded({
+            extended: true
+        }));           
+    }
+
+    private setupLogger(): void {
+        this.express.use(RequestLoggerMiddleware.logRequest);
+    }
+
+    private routes(): void {
+        this.express.use(express.static(join(__dirname, '..', 'public')));
+        this.express.use(routes);
     }
 }
