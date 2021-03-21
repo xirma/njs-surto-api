@@ -16,7 +16,7 @@ router.get('/api/events', UserController.activeEvents);
 router.get('/api/projects', UserController.userProjects);
 router.post('/api/projects/create', UserController.createProject);
 router.put('/api/projects/update', UserController.updateProject);
-router.get('/api/projects/:project_id/detail', UserController.projectDetail);
+router.get('/api/project/:project_id/detail', UserController.projectDetail);
 router.post('/api/events/inscription', UserController.eventInscription);
 
 //Admin

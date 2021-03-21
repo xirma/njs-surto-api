@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { verify } from "jsonwebtoken";
+import { NextFunction, Request, Response } from 'express';
+import { verify } from 'jsonwebtoken';
 
 export default class TokenMiddleware {
 
@@ -10,7 +10,7 @@ export default class TokenMiddleware {
     ];
 
     public static async tokenVerify (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        if (this.allowedPaths.includes(req.path)) {
+        if (TokenMiddleware.allowedPaths.includes(req.path)) {
             return next();
         }
 

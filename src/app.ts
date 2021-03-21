@@ -5,6 +5,8 @@ import { ConsoleColor } from './core/console';
 import Logger from './core/logger';
 import routes from './routes';
 import RequestLoggerMiddleware from './core/http/request-logger.middleware';
+import TokenMiddleware from './security/token.middleware';
+import fileUpload from 'express-fileupload';
 
 export default class App {
 
@@ -27,7 +29,10 @@ export default class App {
         this.express.use(express.json());
         this.express.use(express.urlencoded({
             extended: true
-        }));           
+        }));   
+        this.express.use(fileUpload ({
+            createParentPath: true
+        }));        
     }
 
     private setupLogger(): void {
@@ -36,6 +41,7 @@ export default class App {
 
     private routes(): void {
         this.express.use(express.static(join(__dirname, '..', 'public')));
+        this.express.use(TokenMiddleware.tokenVerify);
         this.express.use(routes);
     }
 }

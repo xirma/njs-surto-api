@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import UsersRepository from '../repositories/user.repository';
 import AuthRepository from '../repositories/auth.repository';
 
 class AuthController {
@@ -38,7 +39,13 @@ class AuthController {
     }
 
     public async profile( req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const { decodedToken: { user_id }} = res.locals;
+        
+        const user = await UsersRepository.byId(user_id);
+        const info = await UsersRepository.userInfo(user_id);
+        return res.json({
+            user, info
+        });
     }
 
     public async activateUser( req: Request, res: Response): Promise<Response> {
