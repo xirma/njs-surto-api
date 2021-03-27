@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import AdminController from '../controllers/admin.controller';
-import UserController from '../controllers/user.controller';
+import ProjectController from '../controllers/project.controller';
 import AuthController from '../controllers/auth.controller';
 
 const router = Router();
@@ -12,12 +12,12 @@ router.get('/api/auth/profile', AuthController.profile);
 router.get('/api/auth/email/:user_id/activate', AuthController.activateUser);
 
 //Users
-router.get('/api/events', UserController.activeEvents);
-router.get('/api/projects', UserController.userProjects);
-router.post('/api/projects/create', UserController.createProject);
-router.put('/api/projects/update', UserController.updateProject);
-router.get('/api/project/:project_id/detail', UserController.projectDetail);
-router.post('/api/events/inscription', UserController.eventInscription);
+router.get('/api/events', ProjectController.activeEvents);
+router.get('/api/projects', ProjectController.userProjects);
+router.post('/api/projects/create', ProjectController.createProject);
+router.put('/api/projects/update', ProjectController.updateProject);
+router.get('/api/project/:project_id/detail', ProjectController.projectDetail);
+router.post('/api/events/inscription', ProjectController.eventInscription);
 
 //Admin
 router.get('/api/admin/projects', AdminController.allProjects);

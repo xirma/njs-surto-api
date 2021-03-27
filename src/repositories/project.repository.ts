@@ -1,3 +1,4 @@
+import { EnumOptions } from 'knex';
 import { queryBuilder } from '../core/database';
 import { Project } from '../models/project';
 
@@ -19,11 +20,29 @@ export default class ProjectRepository {
         return projectId;
     }
 
-    public static async byId(projectId: number): Promise<Project> {
-        return queryBuilder
+    public static async byId(project_id: number): Promise<Project> {
+        const project = queryBuilder
             .select('id', 'name', 'category', 'description', 'img', 'user_id')
             .from('Project')
-            .where('id', '=', projectId)
+            .where('id', '=', project_id)
             .first();
+
+        return project;
     }
+
+    public static async projectsByUser(user_id: number): Promise<Project[]> {
+        return queryBuilder
+            .select()
+            .from('Project')
+            .where('user_id', '=', user_id)
+            .limit(5);
+    }
+
+    public static async updateProject( id: number, name: string,category: EnumOptions, description: string, image: string): Promise<number> {
+        return queryBuilder
+            .update({name: name, category: category, description: description, img: image})
+            .from('Project')
+            .where('id', '=', id);
+    }
+
 }
