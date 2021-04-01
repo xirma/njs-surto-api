@@ -1,6 +1,6 @@
 import { User } from '../models/user';
 import { queryBuilder } from '../core/database';
-import { UserInfo } from '../models/user-info';
+
 
 export default class UsersRepository {
     
@@ -10,14 +10,6 @@ export default class UsersRepository {
             .from('User')
             .where('id', '=', id)
             .first();
-    }
-
-    public static async  userInfo(userId: number): Promise<UserInfo> {
-      return queryBuilder
-        .select('full_name', 'email')
-        .from('User')
-        .where('id', '=', userId)
-        .first();
     }
 
 }

@@ -42,10 +42,7 @@ class AuthController {
         const { decodedToken: { user_id }} = res.locals;
         
         const user = await UsersRepository.byId(user_id);
-        const info = await UsersRepository.userInfo(user_id);
-        return res.json({
-            user, info
-        });
+        return res.json({ user });
     }
 
     public async activateUser( req: Request, res: Response): Promise<Response> {

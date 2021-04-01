@@ -34,7 +34,7 @@ export default class ProjectRepository {
         return queryBuilder
             .select()
             .from('Project')
-            .where('user_id', '=', user_id)
+            .where('User_id', '=', user_id)
             .limit(5);
     }
 
@@ -45,4 +45,22 @@ export default class ProjectRepository {
             .where('id', '=', id);
     }
 
+    public static async all(): Promise<string[]> {
+        return queryBuilder 
+            .select()
+            .from('Project');
+    }
+
+    public static async delete(project_id: number ) {
+        try {
+            return queryBuilder
+                .select()
+                .from('Project')
+                .where('id', '=', project_id)
+                .delete();
+        } catch (Error) {
+            throw new Error('Not Found');
+        }
+
+    }
 }
