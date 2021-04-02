@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+
 import { queryBuilder } from '../core/database';
 import { Event } from '../models/event';
 
@@ -65,5 +65,30 @@ export default class EventRepository {
             if (!del || del <= 0 ) {
                 throw new Error('Not found');
             }
+        }
+
+        public static async all (): Promise<Event[]> {
+            const events = await queryBuilder
+                    .select()
+                    .from('Event');
+
+            if(events.length <= 0) {
+                throw new Error('No events');
+            }
+
+            return events;
+        }
+
+        public static async detail (event_id: number): Promise<Event> {
+            const event = await queryBuilder
+                        .select()
+                        .from('Event')
+                        .where('id', '=', event_id)
+                        .first();
+            if (!event) {
+                throw new Error('Not found');
+            }
+
+            return event;
         }
 }

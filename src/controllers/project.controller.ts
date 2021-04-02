@@ -27,7 +27,7 @@ class ProjectController {
         console.log('userProjects');
         
         try {
-            const projects = await ProjectRepository.projectsByUser(user_id);
+            const projects = await ProjectRepository.byUser(user_id);
             
             return res.json(projects);    
         } catch (err) {
@@ -92,12 +92,34 @@ class ProjectController {
     // --------------------------------------------- //
 
     public async allProjects( req: Request, res: Response): Promise<Response> {
-        const projects = await ProjectRepository.all();
+        try {
+            const projects = await ProjectRepository.all();
+            return res.json(projects);
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
+            });
+        }
 
-        return res.json(projects);
     }
 
     public async projectsByEvent( req: Request, res: Response): Promise<Response> {
+        // const event_id = req.params;
+        // const id = Number(event_id);
+
+        // try {
+        //     const projects = await ProjectRepository.byEvent(id);
+
+        //     return projects;
+        // } catch (Error) {
+        //     return res.status(404).json({
+        //         message: 'Not Found',
+        //         code: 404,
+        //         error: Error.message
+        //     });
+        // }
         return res.json();
     }
 
@@ -106,14 +128,14 @@ class ProjectController {
         const id = Number(user_id);
 
         try {
-            const projects = await ProjectRepository.projectsByUser(id);
+            const projects = await ProjectRepository.byUser(id);
             
             return res.json(projects);    
-        } catch (err) {
-            return res.status(204).json({
-                message: 'No Content',
-                code: 204,
-                error: err.message
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
             });
         } 
     }

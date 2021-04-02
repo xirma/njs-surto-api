@@ -15,11 +15,36 @@ class EventController {
     // --------------------------------------------- //
 
     public async allEvents( req: Request, res: Response): Promise<Response> {
-        return res.json();
+        try { 
+           const events = await EventRepository.all();
+
+           return res.json(events);
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
+            });
+        }
+
+        
     }
 
     public async eventDetail( req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const { event_id } = req.params;
+        const id = Number(event_id);
+
+        try {
+            const event = await EventRepository.detail(id);
+
+            return res.json(event);
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
+            });
+        }
     }
 
     public async createEvent( req: Request, res: Response): Promise<Response> {
@@ -81,8 +106,6 @@ class EventController {
                 error: Error.message
             });
         }
-
-        return res.json();
     }
     
 }

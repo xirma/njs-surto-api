@@ -30,12 +30,18 @@ export default class ProjectRepository {
         return project;
     }
 
-    public static async projectsByUser(user_id: number): Promise<Project[]> {
-        return queryBuilder
+    public static async byUser(user_id: number): Promise<Project[]> {
+        const projects =  await queryBuilder
             .select()
             .from('Project')
             .where('User_id', '=', user_id)
             .limit(5);
+
+        if (projects.length <= 0 ) {
+            throw new Error('No projects for this user');
+        }
+
+        return projects;
     }
 
     public static async update( id: number, name: string,category: EnumOptions, description: string, image: string, user_id: number): Promise<number> {
@@ -52,10 +58,16 @@ export default class ProjectRepository {
         return projectId;
     }
 
-    public static async all(): Promise<string[]> {
-        return queryBuilder 
-            .select()
-            .from('Project');
+    public static async all(): Promise<Project[]> {
+        const projects = await queryBuilder 
+                    .select()
+                    .from('Project');
+
+        if (projects.length <= 0 ) {
+            throw new Error('No projects');
+        }
+
+        return projects;
     }
 
     public static async delete(project_id: number ):Promise<void> {
