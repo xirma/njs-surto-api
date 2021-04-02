@@ -4,7 +4,7 @@ import { Project } from '../models/project';
 
 export default class ProjectRepository {
 
-    public static async createProject(name: string, category: any, description: string, image: string, user_id: number): Promise<number> {
+    public static async create(name: string, category: any, description: string, image: string, user_id: number): Promise<number> {
         const [projectId] = await queryBuilder.insert({
             name: name,
             category: category,
@@ -38,11 +38,18 @@ export default class ProjectRepository {
             .limit(5);
     }
 
-    public static async updateProject( id: number, name: string,category: EnumOptions, description: string, image: string): Promise<number> {
-        return queryBuilder
+    public static async update( id: number, name: string,category: EnumOptions, description: string, image: string, user_id: number): Promise<number> {
+        const projectId = await queryBuilder
             .update({name: name, category: category, description: description, img: image})
-            .from('Project')
-            .where('id', '=', id);
+            .where('id', '=', id)
+            .andWhere('User_id', '=', user_id)
+            .into('Project');
+
+        if (!projectId || projectId <= 0) {
+            throw new Error('Error updating project');
+        }
+
+        return projectId;
     }
 
     public static async all(): Promise<string[]> {
@@ -51,16 +58,15 @@ export default class ProjectRepository {
             .from('Project');
     }
 
-    public static async delete(project_id: number ) {
-        try {
-            return queryBuilder
-                .select()
-                .from('Project')
-                .where('id', '=', project_id)
-                .delete();
-        } catch (Error) {
+    public static async delete(project_id: number ):Promise<void> {
+        const del = await queryBuilder
+            .select()
+            .from('Project')
+            .where('id', '=', project_id)
+            .delete();
+        
+        if (!del || del <= 0 ) {
             throw new Error('Not Found');
-        }
-
+        }    
     }
 }

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { DateTime } from 'luxon';
 import EventRepository from '../repositories/event.repository';
 
 class EventController { 
@@ -46,10 +45,43 @@ class EventController {
     }
 
     public async updateEvent( req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const{ event_id }= req.params;
+        const id = Number(event_id);
+
+        try {
+            const {name, location, date, registration_start, registration_end, number_tables,
+                     number_bazars, size_table, size_bazar, event_map, event_pdf} = req.body;    
+
+            const update = await EventRepository.update(id, name, location, date, registration_start, registration_end, number_tables,
+                number_bazars, size_table, size_bazar, event_map, event_pdf);    
+                
+            return res.json(update);
+
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
+            });
+        }
     }
 
     public async deleteEvent( req: Request, res: Response): Promise<Response> {
+        const{ event_id }= req.params;
+        const id = Number(event_id);
+
+        try {
+            await EventRepository.delete(id);
+
+            return res.json('Event deleted');
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
+            });
+        }
+
         return res.json();
     }
     

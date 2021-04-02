@@ -9,7 +9,7 @@ class ProjectController {
         try{
             const { name, category, description, image } = req.body;
 
-            const projectId = await ProjectRepository.createProject(name, category, description, image, user_id);
+            const projectId = await ProjectRepository.create(name, category, description, image, user_id);
             const project = await ProjectRepository.byId(projectId);
 
             return res.status(201).json(project);
@@ -41,11 +41,13 @@ class ProjectController {
     }
 
     public async updateProject( req: Request, res: Response): Promise<Response> {
-    
+        const { decodedToken: {user_id}} = res.locals;
+        const { project_id } = req.params;
+        const id = Number(project_id);
         try {
-            const { id, name, category, description, image } = req.body;
+            const { name, category, description, image } = req.body;
 
-            const update = await ProjectRepository.updateProject(id, name, category, description, image);
+            const update = await ProjectRepository.update(id, name, category, description, image, user_id);
             return res.json(update);
         } catch (Error) {
             return res.status(404).json({
@@ -122,7 +124,7 @@ class ProjectController {
         
         try{
             await ProjectRepository.delete(id);
-            return res.json();
+            return res.json('Project deleted');
         } catch (Error) {
             return res.status(404).json({
                 message: 'Not Found',
