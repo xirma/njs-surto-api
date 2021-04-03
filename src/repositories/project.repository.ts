@@ -58,7 +58,17 @@ export default class ProjectRepository {
         return projectId;
     }
 
-    public static async all(): Promise<Project[]> {
+    public static async all(filter: string): Promise<Project[]> {
+        if (filter) {
+            const filteredProjects = await this.filter(filter);
+
+            if (filteredProjects.length <= 0 ) {
+                throw new Error('No filtered projects');
+            }
+
+            return filteredProjects;
+        }
+
         const projects = await queryBuilder 
                     .select()
                     .from('Project');
@@ -68,6 +78,14 @@ export default class ProjectRepository {
         }
 
         return projects;
+    }
+
+    public static async filter(filter: string): Promise<Project[]> {
+        return queryBuilder
+            .select()
+            .from('Project')
+            .where('name', 'like', `%${filter}%`)
+            .orWhere('description', 'like', `%${filter}%`);           
     }
 
     public static async delete(project_id: number ):Promise<void> {

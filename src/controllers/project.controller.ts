@@ -92,8 +92,10 @@ class ProjectController {
     // --------------------------------------------- //
 
     public async allProjects( req: Request, res: Response): Promise<Response> {
+        const { filter } = req.params;
+
         try {
-            const projects = await ProjectRepository.all();
+            const projects = await ProjectRepository.all(filter);
             return res.json(projects);
         } catch (Error) {
             return res.status(404).json({

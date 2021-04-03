@@ -67,7 +67,18 @@ export default class EventRepository {
             }
         }
 
-        public static async all (): Promise<Event[]> {
+        public static async all (filter: string): Promise<Event[]> {
+
+            if(filter) {
+                const filteredEvents = await this.filter(filter);
+
+            if (filteredEvents.length <= 0 ) {
+                throw new Error('No filtered events');
+            }
+
+            return filteredEvents;
+            }
+
             const events = await queryBuilder
                     .select()
                     .from('Event');
@@ -77,6 +88,14 @@ export default class EventRepository {
             }
 
             return events;
+        }
+
+        public static async filter(filter: string): Promise<Event[]> {
+            return queryBuilder
+            .select()
+            .from('Event')
+            .where('name', 'like', `%${filter}%`)
+            .orWhere('location', 'like', `%${filter}%`);
         }
 
         public static async detail (event_id: number): Promise<Event> {

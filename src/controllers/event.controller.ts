@@ -15,8 +15,11 @@ class EventController {
     // --------------------------------------------- //
 
     public async allEvents( req: Request, res: Response): Promise<Response> {
+        const { filter } = req.params;
+
         try { 
-           const events = await EventRepository.all();
+            
+           const events = await EventRepository.all(filter);
 
            return res.json(events);
         } catch (Error) {
