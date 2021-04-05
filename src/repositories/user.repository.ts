@@ -56,4 +56,31 @@ export default class UsersRepository {
         
     }
 
+    public static async update(user_id: string,full_name: string, email: string): Promise<number> {
+        const user = await queryBuilder
+            .update({
+                full_name: full_name,
+                email: email
+            }).where('id', '=', user_id)
+            .into('User');
+
+        if(!user || user <= 0) {
+            throw new Error('Not found');
+        }
+
+        return user;
+    }
+
+    public static async delete(user_id: string): Promise<void> {
+        const del = await queryBuilder
+                    .select()
+                    .from('User')
+                    .where('id', '=', user_id)
+                    .delete();
+
+            if (!del || del <= 0 ) {
+                throw new Error('Not found');
+            }
+    }
+
 }

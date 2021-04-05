@@ -5,7 +5,7 @@ import { Project } from '../models/project';
 export default class ProjectRepository {
 
     public static async create(name: string, category: any, description: string, image: string, user_id: number): Promise<number> {
-        const [projectId] = await queryBuilder.insert({
+        const [project_id] = await queryBuilder.insert({
             name: name,
             category: category,
             description: description,
@@ -13,19 +13,27 @@ export default class ProjectRepository {
             user_id
         }).into('Project');
 
-        if (!projectId || projectId <= 0) {
+        if (!project_id || project_id <= 0) {
             throw new Error('Error creating project');
         }
 
-        return projectId;
+        return project_id;
     }
 
-    public static async byId(project_id: number): Promise<Project> {
-        const project = queryBuilder
+    public static async detail(project_id: number, user_id: string): Promise<Project> {
+        const project = await queryBuilder
             .select('id', 'name', 'category', 'description', 'img', 'user_id')
             .from('Project')
             .where('id', '=', project_id)
             .first();
+
+        if (!project || project >= 0 ) {
+            throw new Error('Not found');
+        } 
+
+        if (project.user_id !== user_id) {
+            throw new Error ('Access denied');
+        }
 
         return project;
     }

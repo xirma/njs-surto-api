@@ -9,8 +9,8 @@ class ProjectController {
         try{
             const { name, category, description, image } = req.body;
 
-            const projectId = await ProjectRepository.create(name, category, description, image, user_id);
-            const project = await ProjectRepository.byId(projectId);
+            const id = await ProjectRepository.create(name, category, description, image, user_id);
+            const project = await ProjectRepository.detail(id, user_id);
 
             return res.status(201).json(project);
         } catch (Error) {
@@ -66,21 +66,13 @@ class ProjectController {
         const project_number = Number(project_id);
         
         try {
-            const project = await ProjectRepository.byId(project_number);
-        
-            if(!project){
-                throw new Error ('No Content');
-            } 
-            if (project.user_id !== user_id) {
-                throw new Error ('Access Denied');
-                
-            }
+            const project = await ProjectRepository.detail(project_number, user_id);
 
             return res.status(201).json(project);
         } catch (Error) {
-            return res.status(204).json({
-                message: 'No Content',
-                code: 204,
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
                 error: Error.message
             });
         }

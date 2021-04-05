@@ -31,7 +31,7 @@ router.get('/api/admin/events/detail/:event_id', EventController.eventDetail);
 router.put('/api/admin/events/update/:event_id', EventController.updateEvent);
 router.delete('/api/admin/events/delete/:event_id', EventController.deleteEvent);
 router.get('/api/admin/users/:filter?', UserController.allUsers);
-router.get('/api/admin/:id/users/', UserController.userDetail);
+router.get('/api/admin/:user_id/users/', UserController.userDetail);
 router.put('/api/admin/:user_id/update', UserController.updateUser);
 router.delete('/api/admin/:user_id/delete', UserController.deleteUser);
 

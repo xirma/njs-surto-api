@@ -24,10 +24,10 @@ class AdminController {
     }
 
     public async userDetail (req: Request, res: Response): Promise<Response> {
-        const { id } = req.params;
+        const { user_id } = req.params;
 
         try {
-            const user = await UsersRepository.detail(id);
+            const user = await UsersRepository.detail(user_id);
 
             return res.json(user);
         } catch (Error) {
@@ -40,11 +40,36 @@ class AdminController {
     }
 
     public async updateUser( req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const { user_id } = req.params;
+        const { full_name, email} = req.body;
+
+        try {
+            const user = await UsersRepository.update(user_id, full_name, email);
+            return res.json(user);
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
+            });  
+        }    
     }
 
     public async deleteUser( req: Request, res: Response): Promise<Response> {
-        return res.json();
+        const { user_id } = req.params;
+
+        try {
+            await UsersRepository.delete(user_id);
+
+            return res.json('User deleted');
+        }catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
+            });
+        }
+        
     }
 }
 
