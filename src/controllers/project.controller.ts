@@ -84,11 +84,12 @@ class ProjectController {
     // --------------------------------------------- //
 
     public async allProjects( req: Request, res: Response): Promise<Response> {
-        const { filter } = req.params;
-
+        const { page, limit, filter } = req.params;
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
         try {
-            const projects = await ProjectRepository.all(filter);
-            return res.json(projects);
+            const page = await ProjectRepository.projectsPage(pageNumber, limitNumber, filter);
+            return res.json(page);
         } catch (Error) {
             return res.status(404).json({
                 message: 'Not Found',

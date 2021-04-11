@@ -1,4 +1,6 @@
 import { EnumOptions } from 'knex';
+import { Page } from '../models/page';
+import PaginationRepository from './pagination.repository';
 import { queryBuilder } from '../core/database';
 import { Project } from '../models/project';
 
@@ -66,34 +68,17 @@ export default class ProjectRepository {
         return projectId;
     }
 
-    public static async all(filter: string): Promise<Project[]> {
-        if (filter) {
-            const filteredProjects = await this.filter(filter);
+    public static async projectsPage(page: number, limit: number, filter: string): Promise<Page> {
+        const model = 'Project';
 
-            if (filteredProjects.length <= 0 ) {
-                throw new Error('No filtered projects');
-            }
+        const currentPage = await PaginationRepository.pagination(page, limit, model, filter);
+        
 
-            return filteredProjects;
-        }
-
-        const projects = await queryBuilder 
-                    .select()
-                    .from('Project');
-
-        if (projects.length <= 0 ) {
+        if (currentPage.data.length <= 0 ) {
             throw new Error('No projects');
         }
 
-        return projects;
-    }
-
-    public static async filter(filter: string): Promise<Project[]> {
-        return queryBuilder
-            .select()
-            .from('Project')
-            .where('name', 'like', `%${filter}%`)
-            .orWhere('description', 'like', `%${filter}%`);           
+        return currentPage;
     }
 
     public static async delete(project_id: number ):Promise<void> {

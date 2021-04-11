@@ -21,7 +21,7 @@ router.get('/api/events', EventController.activeEvents);
 router.post('/api/events/inscription', EventController.eventInscription);
 
 //Admin
-router.get('/api/admin/projects/:filter?', ProjectController.allProjects);
+router.get('/api/admin/projects/:page/:limit/:filter?', ProjectController.allProjects);
 router.get('/api/admin/:event_id/projects', ProjectController.projectsByEvent);
 router.get('/api/admin/projects/:user_id', ProjectController.projectsByUser);
 router.delete('/api/admin/projects/delete/:project_id', ProjectController.deleteProject);
