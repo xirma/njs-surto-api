@@ -1,5 +1,5 @@
 export interface Page {
-    totalRecords: number;
+    totalRecords: any;
     totalPages: number;
     previousPage: number;
     nextPage: number;

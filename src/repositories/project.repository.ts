@@ -74,9 +74,9 @@ export default class ProjectRepository {
         const currentPage = await PaginationRepository.pagination(page, limit, model, filter);
         
 
-        if (currentPage.data.length <= 0 ) {
-            throw new Error('No projects');
-        }
+        // if (currentPage.data.length <= 0 ) {
+        //     throw new Error('No projects');
+        // }
 
         return currentPage;
     }
