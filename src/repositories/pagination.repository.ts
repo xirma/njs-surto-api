@@ -1,4 +1,3 @@
-import authController from '~/controllers/auth.controller';
 import { queryBuilder } from '../core/database';
 import { Page } from '../models/page';
 
@@ -11,6 +10,8 @@ export default class PaginationRepository {
         const totalRecords = await this.totalRecords(model, filter);
         const data  = filter ? await this.filter(filter, offset,limit , model) : await this.all(offset, limit, model);
         const totalPages = Math.ceil(totalRecords / limit);
+        console.log(totalRecords);
+        
     
       return { totalRecords, totalPages, previousPage, nextPage, pageSize, data };
     }
@@ -36,11 +37,12 @@ export default class PaginationRepository {
     public static async totalRecords(model: string, filter: string): Promise<number> {
         const query = queryBuilder.select().from(`${model}`);
         const filteredQuery = query.clone().where('name', 'like', `%${filter}%`).orWhere('description', 'like', `%${filter}%`);
+        
         const total = filter ? filteredQuery : query;
-        const totalNumber = total.count<Record<string, number>>('*');
-
-        console.log(totalNumber);
-        return total.count('*');
+        const totalNumber = await total.count();
+        
+       
+       return Number(totalNumber[0]['count(*)']);    
     }
 
     
