@@ -92,10 +92,10 @@ export default class EventRepository {
 
         public static async filter(filter: string): Promise<Event[]> {
             return queryBuilder
-            .select()
-            .from('Event')
-            .where('name', 'like', `%${filter}%`)
-            .orWhere('location', 'like', `%${filter}%`);
+                .select()
+                .from('Event')
+                .where('name', 'like', `%${filter}%`)
+                .orWhere('location', 'like', `%${filter}%`);
         }
 
         public static async detail (event_id: number): Promise<Event> {
@@ -110,4 +110,39 @@ export default class EventRepository {
 
             return event;
         }
+
+        public static async alreadyEnrolled (project_id: string, event_id: string ): Promise<void> {
+            const enrolled = await queryBuilder
+                                .select()
+                                .from('Placeholder')
+                                .where('Event_id', '=', event_id)
+                                .andWhere('Project_id', '=', project_id)
+                                .first();
+
+            if(enrolled) {
+                throw new Error('Already enrolled.');
+            }
+        }
+
+        public static async enroll (project_id: string, event_id: string , table: string, bazar: string): Promise<any> {
+            await queryBuilder
+                        .insert({
+                                Project_id: project_id,
+                                Event_id: event_id,
+                                table: table,
+                                bazar:bazar
+                            })
+                        .into('Placeholder');
+                        
+            const selected = queryBuilder
+                .select('table', 'bazar')
+                .from('Placeholder')
+                .where('Project_id', '=', project_id)
+                .andWhere('Event_id', '=', event_id)
+                .first();
+
+            return selected;
+        }
+
+
 }

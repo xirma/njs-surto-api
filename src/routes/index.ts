@@ -18,7 +18,7 @@ router.post('/api/projects/create', ProjectController.createProject);
 router.put('/api/projects/update/:project_id', ProjectController.updateProject);
 router.get('/api/project/detail/:project_id', ProjectController.projectDetail);
 router.get('/api/events', EventController.activeEvents);
-router.post('/api/events/inscription', EventController.eventInscription);
+router.post('/api/events/enroll/:event_id', EventController.eventEnroll);
 
 //Admin
 router.get('/api/admin/projects/:page/:limit/:filter?', ProjectController.allProjects);

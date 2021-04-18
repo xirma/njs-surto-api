@@ -6,8 +6,23 @@ class EventController {
         return res.json();
     }
 
-    public async eventInscription( req: Request, res: Response): Promise<Response> {
-        return res.json();
+    public async eventEnroll( req: Request, res: Response): Promise<Response> {
+        try {
+            const { project_id, table , bazar } = req.body;
+            const { event_id } = req.params;
+
+            await EventRepository.alreadyEnrolled(project_id, event_id);
+
+            const placeholder = await EventRepository.enroll(project_id, event_id, table, bazar);
+
+            return res.json(placeholder);
+        } catch(Error) {
+            return res.status(403).json({
+                message: 'Forbidden',
+                code: 403,
+                error: Error.message
+            }); 
+        }
     }
 
     // --------------------------------------------- //
@@ -18,7 +33,6 @@ class EventController {
         const { filter } = req.params;
 
         try { 
-            
            const events = await EventRepository.all(filter);
 
            return res.json(events);
