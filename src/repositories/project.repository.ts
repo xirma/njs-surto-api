@@ -54,6 +54,21 @@ export default class ProjectRepository {
         return projects;
     }
 
+    public static async byEvent(event_id: string): Promise<Project[]> {
+        console.log(event_id);
+        const projects = await queryBuilder
+            .select()
+            .from('Placeholder')
+            .where('Event_id', '=', event_id)
+            .leftJoin('Project', 'id', 'Project_id');
+
+        if (projects.length <= 0 ) {
+            throw new Error('No projects enrolled in this event');
+        }
+
+        return projects;
+    }
+
     public static async update( id: number, name: string,category: EnumOptions, description: string, image: string, user_id: number): Promise<number> {
         const projectId = await queryBuilder
             .update({name: name, category: category, description: description, img: image})

@@ -101,20 +101,19 @@ class ProjectController {
     }
 
     public async projectsByEvent( req: Request, res: Response): Promise<Response> {
-        // const event_id = req.params;
-        // const id = Number(event_id);
+        const { event_id } = req.params;
+       
+        try {
+            const projects = await ProjectRepository.byEvent(event_id);
 
-        // try {
-        //     const projects = await ProjectRepository.byEvent(id);
-
-        //     return projects;
-        // } catch (Error) {
-        //     return res.status(404).json({
-        //         message: 'Not Found',
-        //         code: 404,
-        //         error: Error.message
-        //     });
-        // }
+            return res.json(projects);
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not Found',
+                code: 404,
+                error: Error.message
+            });
+        }
         return res.json();
     }
 

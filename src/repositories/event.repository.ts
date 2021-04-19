@@ -67,7 +67,7 @@ export default class EventRepository {
             }
         }
 
-        public static async all (filter: string): Promise<Event[]> {
+        public static async all (filter?: string): Promise<Event[]> {
 
             if(filter) {
                 const filteredEvents = await this.filter(filter);
@@ -88,6 +88,28 @@ export default class EventRepository {
             }
 
             return events;
+        }
+
+        public static async active(): Promise<Event[]> {
+            const allEvents = await this.all();
+            const today = await new Date();
+            const activeEvents = [];
+        
+            for(let i = 0; i < allEvents.length; i++) {
+                const reg_start = new Date (allEvents[i]['registration_start']);
+                const reg_end = new Date (allEvents[i]['registration_end']);
+                
+                if (reg_start.getTime() <= today.getTime() && reg_end.getTime() >= today.getTime()) {
+                    activeEvents.push(allEvents[i]);
+                }
+            }
+
+            if(activeEvents.length <= 0) {
+                throw new Error('No active events');
+            }
+                     
+            return activeEvents;
+
         }
 
         public static async filter(filter: string): Promise<Event[]> {

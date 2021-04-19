@@ -3,7 +3,18 @@ import EventRepository from '../repositories/event.repository';
 
 class EventController { 
     public async activeEvents( req: Request, res: Response): Promise<Response> {
-        return res.json();
+        
+        try { 
+            const events = await EventRepository.active();
+ 
+            return res.json(events);
+         } catch (Error) {
+             return res.status(404).json({
+                 message: 'Not Found',
+                 code: 404,
+                 error: Error.message
+             });
+         }
     }
 
     public async eventEnroll( req: Request, res: Response): Promise<Response> {
