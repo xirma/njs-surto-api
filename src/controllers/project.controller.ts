@@ -24,17 +24,16 @@ class ProjectController {
 
     public async userProjects( req: Request, res: Response): Promise<Response> {
         const { decodedToken: { user_id}} = res.locals;
-        console.log('userProjects');
         
         try {
             const projects = await ProjectRepository.byUser(user_id);
             
             return res.json(projects);    
-        } catch (err) {
-            return res.status(204).json({
-                message: 'No Content',
-                code: 204,
-                error: err.message
+        } catch (Error) {
+            return res.status(404).json({
+                message: 'Not found',
+                code: 404,
+                error: Error.message
             });
         }
 
@@ -55,9 +54,7 @@ class ProjectController {
                 code: 404,
                 error: Error.message
             });
-        }
-
-        
+        }     
     }
 
     public async projectDetail( req: Request, res: Response): Promise<Response> {
@@ -84,11 +81,12 @@ class ProjectController {
     // --------------------------------------------- //
 
     public async allProjects( req: Request, res: Response): Promise<Response> {
-        const { page, limit, filter } = req.params;
+        const { page, limit, filter } = req.query;
         const pageNumber = Number(page);
         const limitNumber = Number(limit);
+
         try {
-            const page = await ProjectRepository.projectsPage(pageNumber, limitNumber, filter);
+            const page = await ProjectRepository.all(pageNumber, limitNumber, filter);
             return res.json(page);
         } catch (Error) {
             return res.status(404).json({
@@ -114,7 +112,6 @@ class ProjectController {
                 error: Error.message
             });
         }
-        return res.json();
     }
 
     public async projectsByUser( req: Request, res: Response): Promise<Response> {

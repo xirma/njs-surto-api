@@ -41,10 +41,12 @@ class EventController {
     // --------------------------------------------- //
 
     public async allEvents( req: Request, res: Response): Promise<Response> {
-        const { filter } = req.params;
+        const { page, limit, filter } = req.query;
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
 
         try { 
-           const events = await EventRepository.all(filter);
+           const events = await EventRepository.all(pageNumber, limitNumber, filter);
 
            return res.json(events);
         } catch (Error) {
@@ -53,9 +55,7 @@ class EventController {
                 code: 404,
                 error: Error.message
             });
-        }
-
-        
+        }        
     }
 
     public async eventDetail( req: Request, res: Response): Promise<Response> {

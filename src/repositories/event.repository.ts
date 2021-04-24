@@ -1,6 +1,7 @@
-
+import { Page } from '~/models/page';
 import { queryBuilder } from '../core/database';
 import { Event } from '../models/event';
+import PaginationRepository from './pagination.repository';
 
 export default class EventRepository {
 
@@ -67,40 +68,29 @@ export default class EventRepository {
             }
         }
 
-        public static async all (filter?: string): Promise<Event[]> {
+        public static async all (page?: number, limit?: number, filter?: any): Promise<Page> {
+            const model = 'Event';
+            const currentPage = await PaginationRepository.pagination(model, page, limit,  filter);
 
-            if(filter) {
-                const filteredEvents = await this.filter(filter);
-
-            if (filteredEvents.length <= 0 ) {
-                throw new Error('No filtered events');
-            }
-
-            return filteredEvents;
-            }
-
-            const events = await queryBuilder
-                    .select()
-                    .from('Event');
-
-            if(events.length <= 0) {
+            if(!currentPage.data.length || currentPage.data.length <= 0) {
                 throw new Error('No events');
             }
 
-            return events;
+            return currentPage;
         }
 
         public static async active(): Promise<Event[]> {
             const allEvents = await this.all();
+            const data = allEvents.data;
             const today = await new Date();
             const activeEvents = [];
         
-            for(let i = 0; i < allEvents.length; i++) {
-                const reg_start = new Date (allEvents[i]['registration_start']);
-                const reg_end = new Date (allEvents[i]['registration_end']);
+            for(let i = 0; i < data.length; i++) {
+                const reg_start = new Date (data[i]['registration_start']);
+                const reg_end = new Date (data[i]['registration_end']);
                 
                 if (reg_start.getTime() <= today.getTime() && reg_end.getTime() >= today.getTime()) {
-                    activeEvents.push(allEvents[i]);
+                    activeEvents.push(data[i]);
                 }
             }
 
@@ -110,14 +100,6 @@ export default class EventRepository {
                      
             return activeEvents;
 
-        }
-
-        public static async filter(filter: string): Promise<Event[]> {
-            return queryBuilder
-                .select()
-                .from('Event')
-                .where('name', 'like', `%${filter}%`)
-                .orWhere('location', 'like', `%${filter}%`);
         }
 
         public static async detail (event_id: number): Promise<Event> {
@@ -137,8 +119,8 @@ export default class EventRepository {
             const enrolled = await queryBuilder
                                 .select()
                                 .from('Placeholder')
-                                .where('Event_id', '=', event_id)
-                                .andWhere('Project_id', '=', project_id)
+                                .where('event_id', '=', event_id)
+                                .andWhere('project_id', '=', project_id)
                                 .first();
 
             if(enrolled) {
@@ -149,8 +131,8 @@ export default class EventRepository {
         public static async enroll (project_id: string, event_id: string , table: string, bazar: string): Promise<any> {
             await queryBuilder
                         .insert({
-                                Project_id: project_id,
-                                Event_id: event_id,
+                                project_id: project_id,
+                                event_id: event_id,
                                 table: table,
                                 bazar:bazar
                             })
@@ -159,8 +141,8 @@ export default class EventRepository {
             const selected = queryBuilder
                 .select('table', 'bazar')
                 .from('Placeholder')
-                .where('Project_id', '=', project_id)
-                .andWhere('Event_id', '=', event_id)
+                .where('project_id', '=', project_id)
+                .andWhere('event_id', '=', event_id)
                 .first();
 
             return selected;

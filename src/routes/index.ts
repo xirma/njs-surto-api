@@ -21,12 +21,12 @@ router.get('/api/events', EventController.activeEvents);
 router.post('/api/events/enroll/:event_id', EventController.eventEnroll);
 
 //Admin
-router.get('/api/admin/projects/:page/:limit/:filter?', ProjectController.allProjects);
+router.get('/api/admin/all_projects', ProjectController.allProjects);
 router.get('/api/admin/projects/:event_id', ProjectController.projectsByEvent);
-router.get('/api/admin/projects/:user_id', ProjectController.projectsByUser);
+router.get('/api/admin/user_projects/:user_id', ProjectController.projectsByUser);
 router.delete('/api/admin/projects/delete/:project_id', ProjectController.deleteProject);
 router.post('/api/admin/events/create', EventController.createEvent);
-router.get('/api/admin/events/:filter?', EventController.allEvents);
+router.get('/api/admin/events', EventController.allEvents);
 router.get('/api/admin/events/detail/:event_id', EventController.eventDetail);
 router.put('/api/admin/events/update/:event_id', EventController.updateEvent);
 router.delete('/api/admin/events/delete/:event_id', EventController.deleteEvent);

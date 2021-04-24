@@ -47,7 +47,7 @@ export default class ProjectRepository {
             .where('User_id', '=', user_id)
             .limit(5);
 
-        if (projects.length <= 0 ) {
+        if (!projects || projects.length <= 0 ) {
             throw new Error('No projects for this user');
         }
 
@@ -83,15 +83,14 @@ export default class ProjectRepository {
         return projectId;
     }
 
-    public static async projectsPage(page: number, limit: number, filter: string): Promise<Page> {
+    public static async all(page: number, limit: number, filter: any): Promise<Page> {
         const model = 'Project';
-
-        const currentPage = await PaginationRepository.pagination(page, limit, model, filter);
+        const currentPage = await PaginationRepository.pagination(model, page, limit,  filter);
         
 
-        // if (currentPage.data.length <= 0 ) {
-        //     throw new Error('No projects');
-        // }
+        if (currentPage.data.length <= 0 ) {
+            throw new Error('No projects');
+        }
 
         return currentPage;
     }
