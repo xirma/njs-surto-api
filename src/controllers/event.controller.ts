@@ -21,6 +21,11 @@ class EventController {
         try {
             const { project_id, table , bazar } = req.body;
             const { event_id } = req.params;
+            //TODO
+            // Verificar se project_id pertence ao usuário que está fazendo o pedido.
+            // Criar array de TABLES e BAZARS baseado na tabela Event -> number_tables e number_bazars.
+            // Filtrar array de TABLES e BAZARS com os números já inseridos na tabela Placeholder.
+            // Retornar SSE com o array filtrado. 
 
             await EventRepository.alreadyEnrolled(project_id, event_id);
 
