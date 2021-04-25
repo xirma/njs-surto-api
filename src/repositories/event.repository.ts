@@ -1,4 +1,4 @@
-import { Page } from '~/models/page';
+import { Page } from '../models/page';
 import { queryBuilder } from '../core/database';
 import { Event } from '../models/event';
 import PaginationRepository from './pagination.repository';
@@ -84,7 +84,7 @@ export default class EventRepository {
             const data = allEvents.data;
             const today = await new Date();
             const activeEvents = [];
-        
+            
             for(let i = 0; i < data.length; i++) {
                 const reg_start = new Date (data[i]['registration_start']);
                 const reg_end = new Date (data[i]['registration_end']);
